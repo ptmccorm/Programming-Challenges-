@@ -1,0 +1,132 @@
+// where'sWaldorf.cpp : This file contains the 'main' function. Program execution begins and ends there.
+#include <iostream>
+#include <string>
+#include <string>
+#include <vector>
+using namespace std;
+
+
+
+int main()
+{
+	int nResults = 0;
+	char grid[52][52];
+	int nresults[5000];
+	int results[5000][40];
+	int x = 0;
+	int cases = 0;
+	cin >> cases;
+	cout << '\n';
+
+	for (int i = 0; i < cases; i++) //loop through # cases 
+	{
+		x = 0;
+		nResults = 0;
+		int nRow, nCol = 0;
+		cin >> nRow >> nCol;
+		string useless;
+		getline(cin, useless);
+
+		for (int g = 0; g < 51; g++)
+			for (int h = 0; h < 51; h++) // set grid each time 
+				grid[g][h] = '\0';
+
+		for (int row = 0; row < nRow; row++) // loop through rows of grid												Building Grid
+		{
+			string line;
+			getline(cin, line);
+			for (int col = 0, lineI = 0; col < nCol && lineI < line.length(); col++, lineI++) // loop through col and line[i]
+			{
+				line[lineI] = toupper(line[lineI]); // set line[i] to its capatalized form
+				grid[row + 1][col + 1] = line[lineI]; // add 1 to row and col to start at arr[1][1] to avoid oob 
+			}
+		}
+
+		int nWords;
+		cin >> nWords; // get # of key words we have to search for
+		getline(cin, useless);
+
+		nresults[i] = nWords;
+
+		for (int j = 0; j < nWords; j++) // loop the amount of search words
+		{
+		next:
+			if (j == nWords)
+				break;
+			string find;
+			getline(cin, find); // get ith word to find
+
+			for (int ltrIndex = 0; ltrIndex < find.length(); ltrIndex++) // caps string find
+			{
+				find[ltrIndex] = toupper(find[ltrIndex]);
+			}
+
+			for (int k = 1; k < nRow + 1; k++)
+			{
+				for (int m = 1; m < nCol + 1; m++) // loop through grid 
+				{
+					int curLet = 1; // 2nd letter in find
+					if (find[0] == grid[k][m]) // catching 1st character of find
+					{
+						if (find.length() != 1) // check if string find is 1 long // catch strings of 1 and save them
+						{
+							for (int rOffset = -1; rOffset <= 1; rOffset++)
+							{
+								for (int cOffset = -1; cOffset <= 1; cOffset++) //check surrounding cells of current cell
+								{
+									if (rOffset != 0 || cOffset != 0) //skipping over center cell //strings of 1 enter here so we must save in here 
+									{
+										int kOff = k + rOffset;
+										int mOff = m + cOffset;
+
+										while (find[curLet] == grid[kOff][mOff]) //find 2nd character
+										{
+											if (curLet == find.length() - 1) // save results if string find == its length
+											{
+												results[i][x] = k;
+												x++;
+												results[i][x] = m;
+												x++;
+												nResults++;
+												j++;
+												goto next;
+											}
+
+											kOff += rOffset;
+											mOff += cOffset;
+											curLet++;
+										}
+										curLet = 1;
+									}
+								}
+							}
+						}
+						else
+						{
+							results[i][x] = k; // saving the result when the length of the string is 1
+							x++;
+							results[i][x] = m;
+							x++;
+							nResults++;
+							j++;
+							goto next;
+						}
+					}
+				}
+			}
+		}
+	}
+	
+	for (int i = 0; i < cases; i++) //loop and print results adding new line for the number of search words
+	{
+		for (int j = 0; j < nresults[i] * 2; j += 2)
+		{
+			cout << results[i][j] << ' ' <<  results[i][j + 1] << '\n';
+		}
+		
+		if (i < cases - 1)
+			cout << '\n';
+	}
+
+	return 0;
+}
