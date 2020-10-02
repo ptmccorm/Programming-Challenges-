@@ -1,0 +1,112 @@
+// Minesweeper.cpp : This file contains the 'main' function. Program execution begins and ends there.
+#include <iostream>
+#include <cstdio>
+#include <stdlib.h>
+#include <stdio.h>
+#include <array>
+#include <vector>
+using namespace std;
+
+int row, col;
+array<array<int, 103>, 103> arr;
+vector<array<array<int, 103>, 103>> results;
+vector<array<int, 2>> dimensions;
+
+
+int main()
+{
+	while (true)
+	{
+
+		cin >> row >> col;
+		dimensions.push_back(array<int, 2>({ row, col }));
+
+		if (row == 0 && col == 0) // exit while loop when row and column are 0, ending the program
+		{
+			break;
+		}
+
+		for (int i = 1; i < row + 1; i++)
+		{
+			for (int j = 1; j < col + 1; j++)
+			{
+				char c;
+				cin >> c;
+				if (c == '*')
+				{
+					arr[i][j] = -1; //set mines to be -1
+					if (arr[i - 1][j - 1] != -1) //top left 
+						arr[i - 1][j - 1]++;
+
+					if (arr[i - 1][j] != -1) //top middle 
+						arr[i - 1][j]++;
+
+					if (arr[i - 1][j + 1] != -1) //top right 
+						arr[i - 1][j + 1]++;
+
+					if (arr[i][j - 1] != -1) //middle left 
+						arr[i][j - 1]++;
+
+					if (arr[i][j + 1] != -1) //middle right 
+						arr[i][j + 1]++;
+
+					if (arr[i + 1][j - 1] != -1) //bottom left 
+						arr[i + 1][j - 1]++;
+
+					if (arr[i + 1][j] != -1) //bottom middle 
+						arr[i + 1][j]++;
+
+					if (arr[i + 1][j + 1] != -1) //bottom right 
+						arr[i + 1][j + 1]++;
+				}
+			}
+		}
+
+		results.push_back(arr);
+
+		for (int m = 0; m < 102; m++)//resets all arr points to 0
+		{
+			for (int o = 0; o < 102; o++)
+			{
+				arr[m][o] = 0;
+			}
+		}
+
+	}
+
+	for (int i = 0; i < results.size(); i++)
+	{
+		cout << "Field #" << i + 1 << ":\n";
+
+		for (int k = 1; k < dimensions[i][0] + 1; k++) // start at index [1][1] to avoid out of bounds
+		{
+			for (int n = 1; n < dimensions[i][1] + 1; n++)
+			{
+				if (results[i][k][n] == -1)
+				{
+					cout << '*';
+				}
+				else
+				{
+					cout << results[i][k][n];
+				}
+			}
+			cout << '\n';
+		}
+		if (i < results.size() - 1) 
+			cout << '\n';
+	}
+	return 0;
+}
+
+
+//4 4
+//*...
+//....
+//.*..
+//....
+//3 5
+//* *...
+//.....
+//.*...
+//0 0
