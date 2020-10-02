@@ -1,0 +1,72 @@
+/ jollyJumpers.cpp : This file contains the 'main' function. Program execution begins and ends there.
+//sources 
+#include <iostream>
+#include <stdio.h>      
+#include <stdlib.h>
+#include <vector>
+#include <string>
+using namespace std;
+
+
+int main()
+{
+	int len;
+	int count = 0;
+	vector<int> results(5000, -1);
+
+	while (cin >> len)
+	{
+		vector<bool> numbers(3001, false);
+		int leftNum, rightNum;
+		
+		cin >> leftNum;
+
+		for (int i = 0; i < len - 1; i++) //loop through line 
+		{
+			cin >> rightNum;
+			int diff = 0;
+			diff = abs(leftNum - rightNum);
+			if (diff >= 1 && diff < len)
+			{
+				numbers[diff] = true;
+			}
+			leftNum = rightNum;
+		}
+
+		bool jolly = true;
+		for (int i = 1; i < len; i++) // loop through numbers to see if 1 through(max-1) are true
+		{
+			if (numbers[i] == false)
+			{
+				jolly = false;
+			}
+
+		}
+		
+		if (jolly)
+		{
+			results[count] = 1;
+			count++;
+		}
+		else
+		{
+			count++;
+		}
+		
+	}
+
+	for (int i = 0; i < count; i++)
+	{
+		if (results[i] == 1)
+		{
+			cout << "Jolly" << endl;
+		}
+		else
+		{
+			cout << "Not jolly" << endl;
+		}
+	}
+
+	return 0;
+}
+
