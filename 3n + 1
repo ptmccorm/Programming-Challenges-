@@ -1,0 +1,105 @@
+// CollatzConjecture.cpp : This file contains the 'main' function. Program execution begins and ends there.
+#include <iostream>
+#include <stack>
+#include <vector>
+#include <string>
+#include <array>
+using namespace std;
+
+
+const int NONE = -1;
+const int MAXRANGE = 1000001;
+
+int x, y;
+int counter = 1;
+int arr[MAXRANGE];
+
+
+void initArr()
+{
+    for (int i = 0; i < MAXRANGE; ++i)
+    {
+        arr[i] = NONE;
+   }
+}
+
+void collatz(unsigned long long & term)
+{
+    term = (term % 2 == 0) ? (term / 2) : ((term * 3) + 1);
+}
+
+int main()
+{
+    vector<array<int, 3>> results;
+    initArr();
+    arr[1] = 1;
+    while (cin >> x >> y)
+    {  
+        bool swapped = false;
+        if (x > y)
+        {
+            x = x + y;
+            y = x - y;
+            x = x - y;
+            swapped = true;
+        }
+
+        for (int seed = x; seed <= y; ++seed)
+        {
+            stack<unsigned long long > stak;
+            unsigned long long term = seed;
+
+            bool terminated = false;
+            int discoveredCycleLen;
+            while (!terminated)
+            {
+                stak.push(term);
+                if (term < MAXRANGE && arr[term] != NONE) {
+                    terminated = true;
+                    discoveredCycleLen = arr[term];
+                }
+                collatz(term);
+               
+            }
+
+            stak.pop();
+            while (!stak.empty())
+            {
+                discoveredCycleLen++;
+                if (stak.top() < MAXRANGE)
+                {
+                    arr[stak.top()] = discoveredCycleLen;
+                }
+                stak.pop();
+            }
+        }
+        
+        int cycleLen = arr[x];
+        for (int i = x; i < y; i++)
+        {
+            if (cycleLen < arr[i + 1])
+            {
+                cycleLen = arr[i + 1];
+            }
+        }
+        if (swapped)
+        {
+            x = x + y;
+            y = x - y;
+            x = x - y;
+        }
+        //cout << x << ' ' <<  y << ' ' << cycleLen << '\n';
+        results.push_back(array<int, 3>());
+        results[results.size() - 1][0] = x;
+        results[results.size() - 1][1] = y;
+        results[results.size() - 1][2] = cycleLen;
+    }
+    for (int i = 0; i < results.size(); i++)
+    {
+        array<int, 3> e = results[i];
+        cout << e[0] << ' ' << e[1] << ' ' << e[2] << '\n';
+    }
+    
+    return 0;
+}
+
