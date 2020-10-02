@@ -1,0 +1,73 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <math.h>
+
+#define MAX_DIGITS 10000000
+
+/*
+This function counts the number of digits in an integer.
+*/
+int countDigits(int num)
+{
+	int digits = 0;
+
+	while (num != 0)
+	{
+		digits += 1;
+		num /= 10;
+	}
+	return digits;
+}
+
+/*
+This function finds an exponent of 2, matching all conditions of the architect's dilemma, returns -1 if not found.
+*/
+int findExponent(int target)
+{
+	int digits = countDigits(target) + 1;
+	bool found = false;
+	double logRes = 1;
+
+	while (!found && digits < MAX_DIGITS)
+	{
+		logRes = (log10(target) + (digits)) / log10(2);
+
+		if ((int)(target * pow(2, (1 - (logRes - (int)logRes)))) == target)
+		{
+			found = true;
+		}
+		else
+		{
+			digits++;
+		}
+	}
+	return found ? (int)(logRes + 0.5) : -1;
+}
+
+int main()
+{
+	std::string currNum;
+	std::getline(std::cin, currNum);
+	std::vector<int> nums;
+	while (currNum != "")
+	{
+		nums.push_back(atoi(currNum.c_str()));
+		std::getline(std::cin, currNum);
+	}
+
+	for (int num : nums)
+	{
+		int exponent = findExponent(num);
+		if (exponent != -1)
+		{
+			std::cout << exponent << std::endl;
+		}
+		else
+		{
+			std::cout << "no power of 2" << std::endl;
+		}
+	}
+
+	return 0;
+}
